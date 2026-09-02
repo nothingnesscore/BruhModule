@@ -35,6 +35,15 @@
                                 <span class="badge" :class="{active: engine.vfs_active}">{{ engine.vfs_active ? "Active" : "Inactive" }}</span>
                             </div>
                         </div>
+                            <div class="status-row">
+                                <span>Global Strategy:</span>
+                                <select v-model="engine.global_strategy" @change="markUnsaved" class="glass-select" style="padding: 4px 10px; font-size: 0.9rem; background-position: right 6px top 50%;">
+                                    <option value="vfs">VFS (ZeroMount)</option>
+                                    <option value="magic">Magic Mount</option>
+                                    <option value="overlay">OverlayFS</option>
+                                </select>
+                            </div>
+                        </div>
                         
                         <div class="glass-card info-card">
                             <h3>Architecture</h3>

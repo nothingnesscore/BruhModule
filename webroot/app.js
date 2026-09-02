@@ -39,7 +39,8 @@ createApp({
         const hasUnsavedChanges = ref(false);
         const engine = ref({
             susfs_active: false,
-            vfs_active: false
+            vfs_active: false,
+            global_strategy: "vfs"
         });
         const modules = ref([]);
 
@@ -51,6 +52,15 @@ createApp({
                         engine.value.susfs_active = detectRes.stdout.includes("susfs: true");
                         engine.value.vfs_active = detectRes.stdout.includes("vfs_driver: true");
                     }
+
+                    let global_strategy = "vfs";
+                    if (configStr.includes("overlay_preferred = false")) {
+                        global_strategy = "magic";
+                    } else if (configStr.includes("magic_mount_fallback = false")) {
+                        global_strategy = "overlay";
+                    }
+                    engine.value.global_strategy = global_strategy;
+
 
                     let configStr = "";
                     const configRes = await ksuExec("cat /data/adb/bruh_mount/config.toml");
@@ -64,7 +74,7 @@ createApp({
                         
                         modules.value = modDirs.map(id => {
                             let strategy = "auto";
-                            if (configStr.includes(`[modules.${id}]`)) {
+                            if (configStr.includes(`[per_module.${id}]`)) {
                                 if (configStr.includes(`force_strategy = "vfs"`)) strategy = "vfs";
                                 else if (configStr.includes(`force_overlay = true`)) strategy = "overlay";
                                 else if (configStr.includes(`force_magic = true`)) strategy = "magic";
@@ -102,7 +112,7 @@ createApp({
             let toml = "[global]\nmode = \"hybrid\"\n\n";
             modules.value.forEach(mod => {
                 if (mod.strategy !== "auto") {
-                    toml += `[modules.${mod.id}]\n`;
+                    toml += `[per_module.${mod.id}]\n`;
                     if (mod.strategy === "vfs") toml += `force_strategy = "vfs"\n`;
                     if (mod.strategy === "overlay") toml += `force_overlay = true\n`;
                     if (mod.strategy === "magic") toml += `force_magic = true\n`;

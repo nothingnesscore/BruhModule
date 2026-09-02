@@ -580,7 +580,7 @@ fn probe_kstat_redirect(baseline: &ProbeBaseline) -> bool {
         err: PROBE_ERR_SENTINEL,
     };
     copy_path_to_buf(&mut info.virtual_pathname, "/__zm_probe__");
-    copy_path_to_buf(&mut info.real_pathname, "/");
+    
 
     match supercall(SusfsCommand::AddSusKstatRedirect, &mut info as *mut _ as *mut u8) {
         Err(errno) => {
