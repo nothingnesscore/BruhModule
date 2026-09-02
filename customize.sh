@@ -16,12 +16,14 @@ else
   ui_print "- Magisk detected. Classic post-fs-data mode enabled."
 fi
 
+mkdir -p /data/adb/bruh_mount/flags
 ui_print "- Setting up permissions..."
 set_perm_recursive "$MODPATH" 0 0 0755 0644
-set_perm "$MODPATH/system/bin/bruh_mount" 0 0 0755
+set_perm "$MODPATH/bin/bruh_mount" 0 0 0755
 set_perm "$MODPATH/metamount.sh" 0 0 0755
 set_perm "$MODPATH/metainstall.sh" 0 0 0755
 set_perm "$MODPATH/post-fs-data.sh" 0 0 0755
 set_perm "$MODPATH/boot-completed.sh" 0 0 0755
 
+"$MODPATH/bin/bruh_mount" bridge init 2>/dev/null
 ui_print "- Installation complete"

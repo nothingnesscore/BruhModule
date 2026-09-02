@@ -46,14 +46,14 @@ createApp({
         const loadData = async () => {
             try {
                 if (window.ksu) {
-                    const detectRes = await ksuExec("/system/bin/bruh_mount detect");
+                    const detectRes = await ksuExec("/data/adb/modules/bruhmodule/bin/bruh_mount detect");
                     if (detectRes && detectRes.stdout) {
                         engine.value.susfs_active = detectRes.stdout.includes("susfs: true");
                         engine.value.vfs_active = detectRes.stdout.includes("vfs_driver: true");
                     }
 
                     let configStr = "";
-                    const configRes = await ksuExec("cat /data/adb/modules/bruhmodule/config.toml");
+                    const configRes = await ksuExec("cat /data/adb/bruh_mount/config.toml");
                     if (configRes && configRes.stdout) {
                         configStr = configRes.stdout;
                     }
@@ -111,7 +111,7 @@ createApp({
             });
             
             const b64 = btoa(toml);
-            await ksuExec(`echo "${b64}" | base64 -d > /data/adb/modules/bruhmodule/config.toml`);
+            await ksuExec(`echo "${b64}" | base64 -d > /data/adb/bruh_mount/config.toml`);
             
             hasUnsavedChanges.value = false;
             toast("Config applied! Please reboot.");

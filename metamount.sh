@@ -9,7 +9,12 @@ if ! mkdir "$LOCK_DIR" 2>/dev/null; then
 fi
 
 # Execute the mount pipeline
-"$MODDIR/system/bin/bruh_mount" mount
+EXTERNAL=$(cat /data/adb/bruh_mount/flags/external_susfs 2>/dev/null || echo none)
+if [ "$EXTERNAL" != "none" ]; then
+    "$MODDIR/bin/bruh_mount" bridge reconcile "$EXTERNAL" 2>/dev/null
+fi
+
+"$MODDIR/bin/bruh_mount" mount
 STATUS=$?
 
 # Notify KSU kernel that metamodule mounting is complete
