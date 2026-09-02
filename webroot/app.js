@@ -22,6 +22,14 @@ async function ksuExec(command, options = {}) {
   });
 }
 
+function toast(message) {
+  if (window.ksu && window.ksu.toast) {
+    window.ksu.toast(message);
+  } else {
+    alert(message);
+  }
+}
+
 const { createApp, ref, onMounted } = Vue;
 
 createApp({
@@ -36,13 +44,12 @@ createApp({
         const loadData = async () => {
             try {
                 if (window.ksu) {
-                    // Check SUSFS
-                    const susfsRes = await ksuExec("dmesg | grep -i susfs | grep initialized");
-                    engine.value.susfs_active = susfsRes && susfsRes.stdout && susfsRes.stdout.includes("version:");
-                    
-                    // Check ZeroMount VFS
-                    const vfsRes = await ksuExec("ls /dev/zeromount");
-                    engine.value.vfs_active = vfsRes && vfsRes.stdout && vfsRes.stdout.includes("/dev/zeromount");
+                    // Check SUSFS and VFS via native daemon probe
+                    const detectRes = await ksuExec("/system/bin/bruh_mount detect");
+                    if (detectRes && detectRes.stdout) {
+                        engine.value.susfs_active = detectRes.stdout.includes("susfs: true");
+                        engine.value.vfs_active = detectRes.stdout.includes("vfs_driver: true");
+                    }
 
                     // Get Config
                     let configStr = "";
@@ -105,7 +112,9 @@ createApp({
             // Write config
             const b64 = btoa(toml);
             await ksuExec(`echo "${b64}" | base64 -d > /data/adb/modules/bruhmodule/config.toml`);
-            await ksuExec("/system/bin/bruh_mount reload");
+            
+            // Re-apply VFS rules dynamically if possible, otherwise tell user to reboot
+            toast("Config saved! Please reboot your device to apply new mount strategies.");
         };
 
         onMounted(() => {
