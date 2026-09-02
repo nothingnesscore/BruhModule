@@ -1,0 +1,66 @@
+pub(super) struct PropEntry {
+    pub name: &'static str,
+    pub value: &'static str,
+}
+
+pub(super) static GENERAL: &[PropEntry] = &[
+    PropEntry { name: "ro.debuggable", value: "0" },
+    PropEntry { name: "ro.secure", value: "1" },
+    PropEntry { name: "ro.build.type", value: "user" },
+    PropEntry { name: "ro.build.tags", value: "release-keys" },
+    PropEntry { name: "ro.boot.vbmeta.device_state", value: "locked" },
+    PropEntry { name: "ro.boot.verifiedbootstate", value: "green" },
+    PropEntry { name: "ro.boot.flash.locked", value: "1" },
+    PropEntry { name: "ro.boot.veritymode", value: "enforcing" },
+    PropEntry { name: "ro.adb.secure", value: "1" },
+    PropEntry { name: "ro.crypto.state", value: "encrypted" },
+    PropEntry { name: "ro.force.debuggable", value: "0" },
+    PropEntry { name: "ro.kernel.qemu", value: "" },
+    PropEntry { name: "ro.secureboot.lockstate", value: "locked" },
+    PropEntry { name: "ro.is_ever_orange", value: "0" },
+    PropEntry { name: "ro.bootmode", value: "normal" },
+    PropEntry { name: "ro.bootimage.build.tags", value: "release-keys" },
+    PropEntry { name: "vendor.boot.vbmeta.device_state", value: "locked" },
+    PropEntry { name: "vendor.boot.verifiedbootstate", value: "green" },
+    PropEntry { name: "ro.boot.realme.lockstate", value: "1" },
+    PropEntry { name: "ro.boot.realmebootstate", value: "green" },
+    PropEntry { name: "ro.boot.verifiedbooterror", value: "" },
+    PropEntry { name: "ro.boot.veritymode.managed", value: "yes" },
+    PropEntry { name: "ro.boot.vbmeta.hash_alg", value: "sha256" },
+    PropEntry { name: "ro.boot.vbmeta.avb_version", value: "1.3" },
+    PropEntry { name: "ro.boot.vbmeta.invalidate_on_error", value: "yes" },
+    PropEntry { name: "sys.oem_unlock_allowed", value: "0" },
+    PropEntry { name: "ro.vendor.boot.warranty_bit", value: "0" },
+    PropEntry { name: "ro.vendor.warranty_bit", value: "0" },
+    PropEntry { name: "ro.boot.warranty_bit", value: "0" },
+    PropEntry { name: "ro.warranty_bit", value: "0" },
+];
+
+// Props that leak PIF module presence
+pub(super) static NUKE_PIF: &[&str] = &[
+    "persist.sys.pihooks.status",
+    "persist.sys.pihooks",
+    "ro.pihooks.enable",
+    "persist.pihooks.mainline_update",
+    "persist.sys.pixelprops.pi",
+    "persist.sys.pixelprops.gms",
+    "persist.sys.pixelprops.gphotos",
+    "persist.sys.pixelprops.netflix",
+];
+
+// Props that leak custom ROM identity
+pub(super) static NUKE_CUSTOM_ROM: &[&str] = &[
+    "ro.lineage.build.version",
+    "ro.lineage.build.version.plat_sdk",
+    "ro.lineage.version",
+    "ro.lineage.display.version",
+    "ro.lineage.releasetype",
+    "ro.lineageaudio.version",
+    "ro.crdroid.build.version",
+    "ro.crdroid.version",
+    "ro.crdroid.display.version",
+    "ro.modversion",
+    "ro.romversion",
+    "ro.rom.build.display.id",
+    "ro.custom.build.version",
+];

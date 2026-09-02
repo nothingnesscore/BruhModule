@@ -1,0 +1,17 @@
+[package]
+name = "resetprop"
+version = "0.4.0"
+edition = "2021"
+license = "MIT"
+description = "Pure Rust Android property area manipulation — get, set, stealth, nuke, delete, hexpatch, compact"
+repository = "https://github.com/Enginex0/resetprop-rs"
+homepage = "https://github.com/Enginex0/resetprop-rs"
+readme = "README.md"
+keywords = ["android", "properties", "system-properties", "resetprop", "root"]
+categories = ["os::unix-apis"]
+
+[dependencies]
+libc = "0.2"
+
+[dev-dependencies]
+tempfile = "3"
