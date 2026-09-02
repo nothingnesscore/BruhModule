@@ -30,6 +30,9 @@ jobs:
           cp module.prop module/
           cp metamount.sh module/
           cp post-fs-data.sh module/
+          cp metainstall.sh module/
+          cp boot-completed.sh module/
+          cp customize.sh module/
           cp README.md module/
           cp -r webroot module/
           ls -la module/
