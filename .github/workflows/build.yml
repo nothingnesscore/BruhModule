@@ -1,9 +1,9 @@
-name: Build and Release Beta
+name: Build Module
 on:
   push:
     branches: [ main ]
 permissions:
-  contents: write
+  contents: read
   issues: write
 jobs:
   build:
@@ -31,17 +31,13 @@ jobs:
           cp post-fs-data.sh module/
           cp README.md module/
           cp -r webroot module/
-          cd module && zip -r ../BruhModule-beta.zip .
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
+          cd module && zip -r ../BruhModule-CI-Build.zip .
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: v0.1.0-beta
-          name: BruhModule v0.1.0 Beta
-          files: BruhModule-beta.zip
-          draft: false
-          prerelease: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: BruhModule-CI-Build
+          path: BruhModule-CI-Build.zip
+          retention-days: 14
       - name: Report Failure
         if: failure()
         run: |
