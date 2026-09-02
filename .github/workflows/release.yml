@@ -18,14 +18,10 @@ jobs:
         run: cargo install cross --git https://github.com/cross-rs/cross
       - name: Build Binary
         run: |
-          cross build --target aarch64-linux-android --release 2>&1 | tee build.log
+          export RUST_BACKTRACE=1
+          export RUST_LOG=debug
+          cross build --target aarch64-linux-android --release --verbose 2>&1 | tee build.log
           if [ ${PIPESTATUS[0]} -ne 0 ]; then exit 1; fi
-      - name: Report Failure
-        if: failure()
-        run: |
-          gh issue create --title "Build Failed on CI" --body "$(echo -e '```\n'; tail -n 500 build.log; echo -e '\n```')"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Package Module
         run: |
           mkdir -p module/system/bin
@@ -44,5 +40,15 @@ jobs:
           files: BruhModule-beta.zip
           draft: false
           prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Report Failure
+        if: failure()
+        run: |
+          if [ -f build.log ]; then
+            gh issue create --title "Build Failed on CI" --body "$(echo -e '```\n'; tail -n 1000 build.log; echo -e '\n```')"
+          else
+            gh issue create --title "Build Failed on CI (No log)" --body "Action failed before log creation"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
