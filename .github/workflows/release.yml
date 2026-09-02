@@ -4,6 +4,7 @@ on:
     branches: [ main ]
 permissions:
   contents: write
+  issues: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,11 +17,19 @@ jobs:
       - name: Install cross
         run: cargo install cross --git https://github.com/cross-rs/cross
       - name: Build Binary
-        run: cross build --target aarch64-linux-android --release
+        run: |
+          cross build --target aarch64-linux-android --release 2>&1 | tee build.log
+          if [ ${PIPESTATUS[0]} -ne 0 ]; then exit 1; fi
+      - name: Report Failure
+        if: failure()
+        run: |
+          gh issue create --title "Build Failed on CI" --body "$(echo -e '```\n'; tail -n 500 build.log; echo -e '\n```')"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Package Module
         run: |
           mkdir -p module/system/bin
-          cp target/aarch64-linux-android/release/metamount module/system/bin/bruh_mount
+          cp target/aarch64-linux-android/release/bruh_mount module/system/bin/bruh_mount
           chmod +x module/system/bin/bruh_mount
           cp module.prop module/
           cp post-fs-data.sh module/
@@ -37,4 +46,3 @@ jobs:
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
