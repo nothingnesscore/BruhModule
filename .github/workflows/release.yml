@@ -25,6 +25,7 @@ jobs:
           cp module.prop module/
           cp post-fs-data.sh module/
           cp README.md module/
+          cp -r webroot module/
           cd module && zip -r ../BruhModule-beta.zip .
       - name: Create Release
         uses: softprops/action-gh-release@v1

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BruhModule WebUI</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+</head>
+<body>
+    <div id="app" class="liquid-container">
+        <header class="glass-header">
+            <h1>BruhModule</h1>
+            <p>Meta Mount Engine</p>
+        </header>
+
+        <main>
+            <div v-if="loading" class="glass-card loading">
+                <div class="spinner"></div>
+                <p>Loading Modules...</p>
+            </div>
+
+            <div v-else>
+                <div class="glass-card status-card">
+                    <h3>Engine Status</h3>
+                    <div class="status-row">
+                        <span>SUSFS:</span>
+                        <span class="badge" :class="{active: engine.susfs_active}">{{ engine.susfs_active ? "Active" : "Inactive" }}</span>
+                    </div>
+                    <div class="status-row">
+                        <span>ZeroMount VFS:</span>
+                        <span class="badge" :class="{active: engine.vfs_active}">{{ engine.vfs_active ? "Active" : "Inactive" }}</span>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Module Strategies</h3>
+                <div class="glass-card module-item" v-for="mod in modules" :key="mod.id">
+                    <div class="module-info">
+                        <h4>{{ mod.name }}</h4>
+                        <p>{{ mod.id }}</p>
+                    </div>
+                    <div class="strategy-selector">
+                        <select v-model="mod.strategy" @change="saveConfig" class="glass-select">
+                            <option value="auto">Auto (Hybrid)</option>
+                            <option value="vfs">VFS (ZeroMount)</option>
+                            <option value="overlay">OverlayFS</option>
+                            <option value="magic">Magic Mount</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
