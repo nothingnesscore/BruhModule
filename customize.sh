@@ -8,7 +8,9 @@ if [ "$ARCH" != "arm64" ]; then
   abort "! Unsupported architecture: $ARCH (supported: arm64)"
 fi
 
-if [ "$KSU" = "true" ]; then
+if [ "$KSU_SUKISU" = "true" ]; then
+  ui_print "- SukiSu (Enhanced SUSFS) detected. Metamodule mode enabled."
+elif [ "$KSU" = "true" ]; then
   ui_print "- KernelSU detected. Metamodule mode enabled."
 elif [ "$APATCH" = "true" ]; then
   ui_print "- APatch detected. Metamodule mode enabled."
