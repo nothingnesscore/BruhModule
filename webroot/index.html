@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BruhModule WebUI</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Vue 3 -->
     <script src="vue.global.prod.js"></script>
 </head>
 <body>
@@ -15,42 +14,85 @@
             <p>Meta Mount Engine</p>
         </header>
 
-        <main>
+        <main class="content-area">
             <div v-if="loading" class="glass-card loading">
                 <div class="spinner"></div>
-                <p>Loading Modules...</p>
+                <p>Loading System State...</p>
             </div>
 
             <div v-else>
-                <div class="glass-card status-card">
-                    <h3>Engine Status</h3>
-                    <div class="status-row">
-                        <span>SUSFS:</span>
-                        <span class="badge" :class="{active: engine.susfs_active}">{{ engine.susfs_active ? "Active" : "Inactive" }}</span>
+                <!-- TAB: STATUS -->
+                <transition name="fade">
+                    <div v-if="activeTab === 'status'" class="tab-content">
+                        <div class="glass-card status-card">
+                            <h3>Engine Status</h3>
+                            <div class="status-row">
+                                <span>SUSFS Layer:</span>
+                                <span class="badge" :class="{active: engine.susfs_active}">{{ engine.susfs_active ? "Active" : "Inactive" }}</span>
+                            </div>
+                            <div class="status-row">
+                                <span>ZeroMount VFS:</span>
+                                <span class="badge" :class="{active: engine.vfs_active}">{{ engine.vfs_active ? "Active" : "Inactive" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-card info-card">
+                            <h3>Architecture</h3>
+                            <p>Universal Metamodule orchestrating VFS, OverlayFS, and Magic Mount dynamically per-module.</p>
+                        </div>
                     </div>
-                    <div class="status-row">
-                        <span>ZeroMount VFS:</span>
-                        <span class="badge" :class="{active: engine.vfs_active}">{{ engine.vfs_active ? "Active" : "Inactive" }}</span>
-                    </div>
-                </div>
+                </transition>
 
-                <h3 class="section-title">Module Strategies</h3>
-                <div class="glass-card module-item" v-for="mod in modules" :key="mod.id">
-                    <div class="module-info">
-                        <h4>{{ mod.name }}</h4>
-                        <p>{{ mod.id }}</p>
+                <!-- TAB: MODULES -->
+                <transition name="fade">
+                    <div v-if="activeTab === 'modules'" class="tab-content">
+                        <h3 class="section-title">Module Strategies</h3>
+                        <div v-if="modules.length === 0" class="glass-card text-center">
+                            <p style="opacity: 0.6">No other modules installed.</p>
+                        </div>
+                        <div class="glass-card module-item" v-for="mod in modules" :key="mod.id">
+                            <div class="module-info">
+                                <h4>{{ mod.name }}</h4>
+                                <p>{{ mod.id }}</p>
+                            </div>
+                            <div class="strategy-selector">
+                                <select v-model="mod.strategy" @change="markUnsaved" class="glass-select">
+                                    <option value="auto">Auto (Hybrid)</option>
+                                    <option value="vfs">VFS (ZeroMount)</option>
+                                    <option value="overlay">OverlayFS</option>
+                                    <option value="magic">Magic Mount</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="strategy-selector">
-                        <select v-model="mod.strategy" @change="saveConfig" class="glass-select">
-                            <option value="auto">Auto (Hybrid)</option>
-                            <option value="vfs">VFS (ZeroMount)</option>
-                            <option value="overlay">OverlayFS</option>
-                            <option value="magic">Magic Mount</option>
-                        </select>
-                    </div>
-                </div>
+                </transition>
             </div>
         </main>
+
+        <!-- HYPEROS 4 FLOATING BOTTOM BAR -->
+        <div class="floating-bottom-bar">
+            <div class="bottom-tab" :class="{active: activeTab === 'status'}" @click="activeTab = 'status'">
+                <svg class="bottom-tab-icon" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+                <span>Status</span>
+            </div>
+            
+            <!-- Floating FAB in the center for saving -->
+            <button class="save-fab" :class="{ visible: hasUnsavedChanges }" @click="saveConfig">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="white" style="margin-right: 6px;">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                Apply
+            </button>
+
+            <div class="bottom-tab" :class="{active: activeTab === 'modules'}" @click="activeTab = 'modules'">
+                <svg class="bottom-tab-icon" viewBox="0 0 24 24">
+                    <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+                </svg>
+                <span>Modules</span>
+            </div>
+        </div>
     </div>
     <script src="app.js"></script>
 </body>

@@ -35,6 +35,8 @@ const { createApp, ref, onMounted } = Vue;
 createApp({
     setup() {
         const loading = ref(true);
+        const activeTab = ref('status');
+        const hasUnsavedChanges = ref(false);
         const engine = ref({
             susfs_active: false,
             vfs_active: false
@@ -44,27 +46,23 @@ createApp({
         const loadData = async () => {
             try {
                 if (window.ksu) {
-                    // Check SUSFS and VFS via native daemon probe
                     const detectRes = await ksuExec("/system/bin/bruh_mount detect");
                     if (detectRes && detectRes.stdout) {
                         engine.value.susfs_active = detectRes.stdout.includes("susfs: true");
                         engine.value.vfs_active = detectRes.stdout.includes("vfs_driver: true");
                     }
 
-                    // Get Config
                     let configStr = "";
                     const configRes = await ksuExec("cat /data/adb/modules/bruhmodule/config.toml");
                     if (configRes && configRes.stdout) {
                         configStr = configRes.stdout;
                     }
 
-                    // Get Modules
                     const modsRes = await ksuExec("ls /data/adb/modules");
                     if (modsRes && modsRes.stdout) {
                         const modDirs = modsRes.stdout.split("\n").filter(m => m && m.trim() !== "" && m !== "bruhmodule");
                         
                         modules.value = modDirs.map(id => {
-                            // Extract strategy from basic toml parsing
                             let strategy = "auto";
                             if (configStr.includes(`[modules.${id}]`)) {
                                 if (configStr.includes(`force_strategy = "vfs"`)) strategy = "vfs";
@@ -72,15 +70,10 @@ createApp({
                                 else if (configStr.includes(`force_magic = true`)) strategy = "magic";
                             }
                             
-                            return {
-                                id,
-                                name: id,
-                                strategy
-                            };
+                            return { id, name: id, strategy };
                         });
                     }
                 } else {
-                    // Mock data for browser testing
                     engine.value.susfs_active = true;
                     engine.value.vfs_active = true;
                     modules.value = [
@@ -95,8 +88,16 @@ createApp({
             }
         };
 
+        const markUnsaved = () => {
+            hasUnsavedChanges.value = true;
+        };
+
         const saveConfig = async () => {
-            if (!window.ksu) return;
+            if (!window.ksu) {
+                hasUnsavedChanges.value = false;
+                toast("Config saved (Mock)");
+                return;
+            }
             
             let toml = "[global]\nmode = \"hybrid\"\n\n";
             modules.value.forEach(mod => {
@@ -109,12 +110,11 @@ createApp({
                 }
             });
             
-            // Write config
             const b64 = btoa(toml);
             await ksuExec(`echo "${b64}" | base64 -d > /data/adb/modules/bruhmodule/config.toml`);
             
-            // Re-apply VFS rules dynamically if possible, otherwise tell user to reboot
-            toast("Config saved! Please reboot your device to apply new mount strategies.");
+            hasUnsavedChanges.value = false;
+            toast("Config applied! Please reboot.");
         };
 
         onMounted(() => {
@@ -123,9 +123,12 @@ createApp({
 
         return {
             loading,
+            activeTab,
+            hasUnsavedChanges,
             engine,
             modules,
-            saveConfig
+            saveConfig,
+            markUnsaved
         }
     }
 }).mount("#app");
