@@ -706,7 +706,7 @@ pub fn run_pipeline_with_bootloop_guard(config: ZeroMountConfig) -> Result<Runti
     if ZeroMountConfig::check_bootloop()? {
         warn!("previous boot failed, disabling bruh_mount");
 
-        let _ = std::fs::File::create("/data/adb/modules/BruhModule/disable");
+        let _ = std::fs::File::create("/data/adb/modules/bruhmodule/disable");
         let _ = crate::utils::platform::write_description_to_module_prop(
             "\u{26a0}\u{fe0f} Disabled — previous boot failed. Re-enable manually.",
         );

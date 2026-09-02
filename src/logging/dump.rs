@@ -145,7 +145,7 @@ fn collect_device_info() -> String {
     let android = run("getprop", &["ro.build.version.release"]);
     let logd = run("getprop", &["init.svc.logd"]);
     let ksu_ver = fs::read_to_string("/data/adb/ksu/version").unwrap_or_default();
-    let module_ver = fs::read_to_string("/data/adb/modules/BruhModule/module.prop")
+    let module_ver = fs::read_to_string("/data/adb/modules/bruhmodule/module.prop")
         .unwrap_or_default()
         .lines()
         .find(|l| l.starts_with("version="))

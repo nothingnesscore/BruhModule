@@ -1,5 +1,4 @@
 #!/system/bin/sh
-MODDIR=\
+MODDIR=${0%/*}
 # Execute the backend daemon in background
-nohup \/system/bin/bruh_mount > \/daemon.log 2>&1 &
-
+nohup $MODDIR/system/bin/bruh_mount > $MODDIR/daemon.log 2>&1 &

@@ -31,12 +31,12 @@ jobs:
           cp post-fs-data.sh module/
           cp README.md module/
           cp -r webroot module/
-          cd module && zip -r ../BruhModule-CI-Build.zip .
+          ls -la module/
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: BruhModule-CI-Build
-          path: BruhModule-CI-Build.zip
+          path: module/
           retention-days: 14
       - name: Report Failure
         if: failure()

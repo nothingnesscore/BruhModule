@@ -111,7 +111,7 @@ pub fn handle_webui_init() -> Result<()> {
         enabled: config.guard.enabled,
         recovery_lockout: crate::guard::recovery::is_locked_out(),
         bootcount: ZeroMountConfig::read_bootcount(),
-        disabled: std::path::Path::new("/data/adb/modules/BruhModule/disable").exists(),
+        disabled: std::path::Path::new("/data/adb/modules/bruhmodule/disable").exists(),
         last_recovery,
     };
 

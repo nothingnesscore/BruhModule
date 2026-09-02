@@ -5,7 +5,7 @@ use std::process::Command;
 
 use crate::core::config::ZeroMountConfig;
 
-const MODULE_DIR: &str = "/data/adb/modules/BruhModule";
+const MODULE_DIR: &str = "/data/adb/modules/bruhmodule";
 const ACTIVITY_LOG: &str = "/data/adb/bruh_mount/activity.log";
 const RECOVERY_LOCKOUT: &str = "/data/adb/bruh_mount/.recovery_lockout";
 

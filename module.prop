@@ -5,3 +5,4 @@ versionCode=1
 author=nothingnesscore
 description=The ultimate Universal Meta Mount Module. Clean VFS, Hybrid Per-Module mounting, and SUSFS v2.3.0 native integration.
 
+webUi=true

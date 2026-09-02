@@ -648,8 +648,8 @@ fn nuke_ext4_sysfs(mount_point: &Path) {
 /// Find the best-matching nuke .ko file for the running kernel.
 /// Files are at <module_dir>/lkm/nuke-android<ver>-<kernel>.ko
 fn select_nuke_ko(_module_base: &Path) -> Option<PathBuf> {
-    // Module directory: /data/adb/modules/BruhModule/lkm/
-    let lkm_dir = Path::new("/data/adb/modules/BruhModule").join(LKM_DIR);
+    // Module directory: /data/adb/modules/bruhmodule/lkm/
+    let lkm_dir = Path::new("/data/adb/modules/bruhmodule").join(LKM_DIR);
     if !lkm_dir.is_dir() {
         return None;
     }

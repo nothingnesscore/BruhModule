@@ -23,7 +23,7 @@ pub fn handle_guard(action: GuardAction) -> Result<()> {
     match action {
         GuardAction::Check => {
             if recovery::is_locked_out()
-                || Path::new("/data/adb/modules/BruhModule/disable").exists()
+                || Path::new("/data/adb/modules/bruhmodule/disable").exists()
             {
                 std::process::exit(1);
             }
@@ -51,7 +51,7 @@ pub fn handle_guard(action: GuardAction) -> Result<()> {
 
 fn print_status() -> Result<()> {
     let bootcount = ZeroMountConfig::read_bootcount();
-    let disabled = Path::new("/data/adb/modules/BruhModule/disable").exists();
+    let disabled = Path::new("/data/adb/modules/bruhmodule/disable").exists();
     let lockout = recovery::is_locked_out();
     println!("bootcount: {bootcount}");
     println!("disabled: {disabled}");

@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 
 use crate::core::types::{RootManager, RootMountMode};
 
-const BRUH_MOUNT_MODULE_DIR: &str = "/data/adb/modules/BruhModule";
+const BRUH_MOUNT_MODULE_DIR: &str = "/data/adb/modules/bruhmodule";
 
 // -- KernelSU --
 
@@ -26,7 +26,7 @@ impl RootManager for KsuManager {
     fn susfs_binary_paths(&self) -> Vec<PathBuf> {
         vec![
             PathBuf::from("/data/adb/ksu/bin/ksu_susfs"),
-            PathBuf::from("/data/adb/modules/BruhModule/ksu_susfs"),
+            PathBuf::from("/data/adb/modules/bruhmodule/ksu_susfs"),
         ]
     }
 
@@ -62,7 +62,7 @@ impl RootManager for APatchManager {
     fn susfs_binary_paths(&self) -> Vec<PathBuf> {
         vec![
             PathBuf::from("/data/adb/ap/bin/ksu_susfs"),
-            PathBuf::from("/data/adb/modules/BruhModule/ksu_susfs"),
+            PathBuf::from("/data/adb/modules/bruhmodule/ksu_susfs"),
         ]
     }
 

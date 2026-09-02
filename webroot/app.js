@@ -22,7 +22,7 @@ createApp({
 
                     // Get Config
                     let configStr = "";
-                    const configRes = await ksu.exec("cat /data/adb/modules/BruhModule/config.toml");
+                    const configRes = await ksu.exec("cat /data/adb/modules/bruhmodule/config.toml");
                     if (configRes && configRes.stdout) {
                         configStr = configRes.stdout;
                     }
@@ -30,7 +30,7 @@ createApp({
                     // Get Modules
                     const modsRes = await ksu.exec("ls /data/adb/modules");
                     if (modsRes && modsRes.stdout) {
-                        const modDirs = modsRes.stdout.split("\\n").filter(m => m && m !== "BruhModule");
+                        const modDirs = modsRes.stdout.split("\\n").filter(m => m && m !== "bruhmodule");
                         
                         modules.value = modDirs.map(id => {
                             // Extract strategy from basic toml parsing
@@ -78,7 +78,7 @@ createApp({
                 }
             });
             
-            await ksu.exec(`echo "${toml}" > /data/adb/modules/BruhModule/config.toml`);
+            await ksu.exec(`echo "${toml}" > /data/adb/modules/bruhmodule/config.toml`);
             await ksu.exec("bruh_mount reload");
         };
 
