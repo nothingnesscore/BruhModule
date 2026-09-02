@@ -1,0 +1,7 @@
+id=bruhmodule
+name=BruhModule (Meta Mount)
+version=v0.1.0-beta
+versionCode=1
+author=nothingnesscore
+description=The ultimate Universal Meta Mount Module. Clean VFS, Hybrid Per-Module mounting, and SUSFS v2.3.0 native integration.
+

@@ -1,0 +1,36 @@
+name: Build and Release Beta
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+      - name: Build Binary
+        run: cross build --target aarch64-linux-android --release
+      - name: Package Module
+        run: |
+          mkdir -p module/system/bin
+          cp target/aarch64-linux-android/release/metamount module/system/bin/bruh_mount
+          chmod +x module/system/bin/bruh_mount
+          cp module.prop module/
+          cp post-fs-data.sh module/
+          cp README.md module/
+          cd module && zip -r ../BruhModule-beta.zip .
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v0.1.0-beta
+          name: BruhModule v0.1.0 Beta
+          files: BruhModule-beta.zip
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
